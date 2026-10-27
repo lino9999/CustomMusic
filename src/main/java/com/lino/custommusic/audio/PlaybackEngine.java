@@ -179,10 +179,13 @@ public class PlaybackEngine {
         float noteVol = note.volume() * masterVol * 2.0f;
         float pitch = note.pitch();
 
-        if (musicBox.isHeadphones() && musicBox.getOwnerUuid() != null) {
-            Player owner = Bukkit.getPlayer(musicBox.getOwnerUuid());
-            if (owner != null && owner.isOnline()) {
-                owner.playSound(owner.getLocation(), note.sound(), SoundCategory.RECORDS, noteVol, pitch);
+        if (musicBox.isHeadphones()) {
+            Player target = musicBox.getPortableCarrier();
+            if (target == null && musicBox.getOwnerUuid() != null) {
+                target = Bukkit.getPlayer(musicBox.getOwnerUuid());
+            }
+            if (target != null && target.isOnline()) {
+                target.playSound(target.getLocation(), note.sound(), SoundCategory.RECORDS, noteVol, pitch);
             }
             return;
         }
@@ -197,25 +200,53 @@ public class PlaybackEngine {
         float masterVol = (musicBox.getVolume() / 100.0f) * plugin.getConfigManager().getVolumeMultiplier();
         float pitch = musicBox.getPlaybackSpeedMultiplier();
 
-        if (musicBox.isHeadphones() && musicBox.getOwnerUuid() != null) {
-            Player owner = Bukkit.getPlayer(musicBox.getOwnerUuid());
-            if (owner != null && owner.isOnline()) {
-                owner.playSound(owner.getLocation(), soundName, SoundCategory.RECORDS, masterVol, pitch);
+        org.bukkit.Sound bukkitSound = null;
+        try {
+            bukkitSound = org.bukkit.Sound.valueOf(soundName);
+        } catch (IllegalArgumentException ignored) {}
+
+        if (musicBox.isHeadphones()) {
+            Player target = musicBox.getPortableCarrier();
+            if (target == null && musicBox.getOwnerUuid() != null) {
+                target = Bukkit.getPlayer(musicBox.getOwnerUuid());
+            }
+            if (target != null && target.isOnline()) {
+                if (bukkitSound != null) {
+                    target.playSound(target.getLocation(), bukkitSound, SoundCategory.RECORDS, masterVol, pitch);
+                } else {
+                    target.playSound(target.getLocation(), soundName, SoundCategory.RECORDS, masterVol, pitch);
+                }
             }
             return;
         }
 
         Location loc = musicBox.getLocation();
         if (loc != null && loc.getWorld() != null) {
-            loc.getWorld().playSound(loc, soundName, SoundCategory.RECORDS, masterVol, pitch);
+            if (bukkitSound != null) {
+                loc.getWorld().playSound(loc, bukkitSound, SoundCategory.RECORDS, masterVol, pitch);
+            } else {
+                loc.getWorld().playSound(loc, soundName, SoundCategory.RECORDS, masterVol, pitch);
+            }
         }
     }
 
     private void stopCustomSound(String soundName) {
-        if (musicBox.isHeadphones() && musicBox.getOwnerUuid() != null) {
-            Player owner = Bukkit.getPlayer(musicBox.getOwnerUuid());
-            if (owner != null && owner.isOnline()) {
-                owner.stopSound(soundName, SoundCategory.RECORDS);
+        org.bukkit.Sound bukkitSound = null;
+        try {
+            bukkitSound = org.bukkit.Sound.valueOf(soundName);
+        } catch (IllegalArgumentException ignored) {}
+
+        if (musicBox.isHeadphones()) {
+            Player target = musicBox.getPortableCarrier();
+            if (target == null && musicBox.getOwnerUuid() != null) {
+                target = Bukkit.getPlayer(musicBox.getOwnerUuid());
+            }
+            if (target != null && target.isOnline()) {
+                if (bukkitSound != null) {
+                    target.stopSound(bukkitSound, SoundCategory.RECORDS);
+                } else {
+                    target.stopSound(soundName, SoundCategory.RECORDS);
+                }
             }
             return;
         }
@@ -225,7 +256,11 @@ public class PlaybackEngine {
             double maxDistSq = 32.0 * 32.0;
             for (Player p : loc.getWorld().getPlayers()) {
                 if (p.getLocation().distanceSquared(loc) <= maxDistSq) {
-                    p.stopSound(soundName, SoundCategory.RECORDS);
+                    if (bukkitSound != null) {
+                        p.stopSound(bukkitSound, SoundCategory.RECORDS);
+                    } else {
+                        p.stopSound(soundName, SoundCategory.RECORDS);
+                    }
                 }
             }
         }

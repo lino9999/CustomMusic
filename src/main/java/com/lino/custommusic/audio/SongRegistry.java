@@ -22,10 +22,13 @@ public class SongRegistry {
         songs.clear();
         if (!songsFolder.exists()) {
             songsFolder.mkdirs();
-            exportDefaultSongs();
         }
 
         File[] files = songsFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".nbs"));
+        if (files == null || files.length == 0) {
+            exportDefaultSongs();
+            files = songsFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".nbs"));
+        }
         if (files != null) {
             for (File file : files) {
                 String id = file.getName().replace(".nbs", "").toLowerCase();

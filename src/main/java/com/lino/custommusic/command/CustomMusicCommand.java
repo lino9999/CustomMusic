@@ -50,6 +50,7 @@ public class CustomMusicCommand implements CommandExecutor, TabCompleter {
                 }
                 plugin.getConfigManager().reload();
                 plugin.getSongRegistry().loadAll();
+                plugin.getRadioStation().refreshQueue();
                 sender.sendMessage(plugin.getConfigManager().getMessage("general.reloaded"));
                 return true;
             }
@@ -102,6 +103,7 @@ public class CustomMusicCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 plugin.getSongRegistry().loadAll();
+                plugin.getRadioStation().refreshQueue();
                 int count = plugin.getSongRegistry().getAllSongs().size();
                 sender.sendMessage(plugin.getConfigManager().getMessage("audio.scanned")
                         .replace("%count%", String.valueOf(count)));

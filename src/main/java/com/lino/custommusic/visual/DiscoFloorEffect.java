@@ -87,11 +87,8 @@ public class DiscoFloorEffect {
         for (Location loc : activeFloorBlocks) {
             if (loc.getWorld() == null) continue;
             BlockData realData = loc.getBlock().getBlockData();
-            double maxDistSq = 32.0 * 32.0;
             for (Player p : loc.getWorld().getPlayers()) {
-                if (p.getLocation().distanceSquared(loc) <= maxDistSq) {
-                    p.sendBlockChange(loc, realData);
-                }
+                p.sendBlockChange(loc, realData);
             }
         }
         activeFloorBlocks.clear();

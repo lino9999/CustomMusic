@@ -81,14 +81,10 @@ public class CompanionTracker {
 
             ArmorStand stand = visualStands.get(uuid);
             Location targetLoc = calculateOffset(player);
-            if (stand == null || !stand.isValid()) {
+            if (stand == null || !stand.isValid() || !stand.getWorld().equals(player.getWorld())) {
                 setCompanion(player, box);
             } else {
-                if (!stand.getWorld().equals(player.getWorld())) {
-                    stand.teleport(targetLoc);
-                } else {
-                    stand.teleport(targetLoc);
-                }
+                stand.teleport(targetLoc);
             }
             box.setLocation(player.getLocation());
         });

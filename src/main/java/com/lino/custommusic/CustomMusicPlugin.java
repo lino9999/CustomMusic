@@ -78,7 +78,22 @@ public class CustomMusicPlugin extends JavaPlugin {
             }
         }, 1L, 1L);
 
+        cleanOrphanEntities();
+
         getLogger().info("CustomMusic enabled successfully! Designed by Lino.");
+    }
+
+    private void cleanOrphanEntities() {
+        org.bukkit.NamespacedKey companionKey = new org.bukkit.NamespacedKey(this, "companion");
+        org.bukkit.NamespacedKey discoballKey = new org.bukkit.NamespacedKey(this, "discoball");
+        for (org.bukkit.World world : Bukkit.getWorlds()) {
+            for (org.bukkit.entity.ArmorStand stand : world.getEntitiesByClass(org.bukkit.entity.ArmorStand.class)) {
+                if (stand.getPersistentDataContainer().has(companionKey, org.bukkit.persistence.PersistentDataType.BYTE)
+                        || stand.getPersistentDataContainer().has(discoballKey, org.bukkit.persistence.PersistentDataType.BYTE)) {
+                    stand.remove();
+                }
+            }
+        }
     }
 
     @Override

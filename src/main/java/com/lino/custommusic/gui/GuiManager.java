@@ -30,6 +30,22 @@ public class GuiManager {
         }
     }
 
+    public void handleClose(Player player, GuiWindow window) {
+        if (player == null || window == null) return;
+        GuiWindow current = activeWindows.get(player.getUniqueId());
+        if (current == window) {
+            activeWindows.remove(player.getUniqueId());
+            if (window.getMusicBox() != null) {
+                org.bukkit.Bukkit.getScheduler().runTask(plugin, () -> {
+                    GuiWindow next = activeWindows.get(player.getUniqueId());
+                    if (next == null || next.getMusicBox() != window.getMusicBox()) {
+                        window.getMusicBox().setInUse(false);
+                    }
+                });
+            }
+        }
+    }
+
     public GuiWindow getActiveWindow(Player player) {
         return player != null ? activeWindows.get(player.getUniqueId()) : null;
     }

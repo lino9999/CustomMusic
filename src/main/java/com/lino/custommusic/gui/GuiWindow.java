@@ -35,6 +35,7 @@ public abstract class GuiWindow implements InventoryHolder {
 
     public void open() {
         build();
+        plugin.getGuiManager().registerWindow(player, this);
         player.openInventory(inventory);
     }
 

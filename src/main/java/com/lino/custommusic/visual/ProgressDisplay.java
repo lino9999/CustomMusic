@@ -87,10 +87,13 @@ public class ProgressDisplay {
     }
 
     private Collection<? extends Player> getAudience() {
-        if (musicBox.isHeadphones() && musicBox.getOwnerUuid() != null) {
-            Player owner = Bukkit.getPlayer(musicBox.getOwnerUuid());
-            if (owner != null && owner.isOnline()) {
-                return java.util.Collections.singletonList(owner);
+        if (musicBox.isHeadphones()) {
+            Player target = musicBox.getPortableCarrier();
+            if (target == null && musicBox.getOwnerUuid() != null) {
+                target = Bukkit.getPlayer(musicBox.getOwnerUuid());
+            }
+            if (target != null && target.isOnline()) {
+                return java.util.Collections.singletonList(target);
             }
             return java.util.Collections.emptyList();
         }

@@ -171,8 +171,21 @@ public class ControlGui extends GuiWindow {
         ), e -> {
             if (carries) {
                 plugin.getCompanionManager().removeCompanion(player);
+                org.bukkit.inventory.ItemStack item = plugin.getConfigManager().createBoxItem(musicBox.isAutoPlay());
+                java.util.Map<Integer, org.bukkit.inventory.ItemStack> leftover = player.getInventory().addItem(item);
+                if (!leftover.isEmpty()) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), item);
+                }
                 player.sendMessage(plugin.getConfigManager().getMessage("box.portable_docked"));
             } else {
+                if (musicBox.getEngine() != null) {
+                    musicBox.getEngine().getFloorEffect().reset();
+                    musicBox.getEngine().getBallEffect().remove();
+                }
+                plugin.getBoxManager().unregisterBox(musicBox);
+                if (musicBox.getLocation() != null && musicBox.getLocation().getBlock().getType() == Material.NOTE_BLOCK) {
+                    musicBox.getLocation().getBlock().setType(Material.AIR);
+                }
                 plugin.getCompanionManager().setCompanion(player, musicBox);
                 player.sendMessage(plugin.getConfigManager().getMessage("box.portable_activated"));
             }

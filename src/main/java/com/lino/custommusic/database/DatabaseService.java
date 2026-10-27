@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DatabaseService {
     private final CustomMusicPlugin plugin;
     private final File dbFile;
+    private final Map<UUID, Set<String>> cachedUnlocks = new ConcurrentHashMap<>();
     private Connection connection;
 
     public DatabaseService(CustomMusicPlugin plugin) {
@@ -147,7 +148,7 @@ public class DatabaseService {
     }
 
     public synchronized void saveBox(MusicBox box) {
-        if (connection == null || box == null || box.getLocation() == null) return;
+        if (connection == null || box == null || box.getLocation() == null || box.getLocation().getWorld() == null) return;
 
         String upsert = """
             INSERT INTO music_boxes (
@@ -254,21 +255,31 @@ public class DatabaseService {
     }
 
     public synchronized boolean hasPlayerUnlockedSong(UUID playerUuid, String songId) {
-        if (connection == null || playerUuid == null || songId == null) return false;
-        String query = "SELECT 1 FROM player_unlocks WHERE player_uuid = ? AND song_id = ?;";
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setString(1, playerUuid.toString());
-            ps.setString(2, songId);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
-            }
-        } catch (SQLException ignored) {
-            return false;
+        if (playerUuid == null || songId == null) return false;
+        Set<String> set = cachedUnlocks.get(playerUuid);
+        if (set != null) {
+            return set.contains(songId);
         }
+
+        Set<String> loaded = ConcurrentHashMap.newKeySet();
+        if (connection != null) {
+            String query = "SELECT song_id FROM player_unlocks WHERE player_uuid = ?;";
+            try (PreparedStatement ps = connection.prepareStatement(query)) {
+                ps.setString(1, playerUuid.toString());
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        loaded.add(rs.getString("song_id"));
+                    }
+                }
+            } catch (SQLException ignored) {}
+        }
+        cachedUnlocks.put(playerUuid, loaded);
+        return loaded.contains(songId);
     }
 
     public void unlockSongAsync(UUID playerUuid, String songId) {
         if (playerUuid == null || songId == null) return;
+        cachedUnlocks.computeIfAbsent(playerUuid, k -> ConcurrentHashMap.newKeySet()).add(songId);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             synchronized (DatabaseService.this) {
                 if (connection == null) return;
@@ -280,5 +291,11 @@ public class DatabaseService {
                 } catch (SQLException ignored) {}
             }
         });
+    }
+
+    public void invalidatePlayerCache(UUID playerUuid) {
+        if (playerUuid != null) {
+            cachedUnlocks.remove(playerUuid);
+        }
     }
 }

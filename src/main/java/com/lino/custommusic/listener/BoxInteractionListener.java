@@ -14,11 +14,16 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.UUID;
 
 public class BoxInteractionListener implements Listener {
@@ -124,7 +129,7 @@ public class BoxInteractionListener implements Listener {
             if (plugin.getCompanionManager().isCarrying(player) && player.isSneaking()) {
                 event.setCancelled(true);
                 Block targetBlock = block.getRelative(event.getBlockFace());
-                if (targetBlock.getType() == Material.AIR) {
+                if (isDockable(targetBlock)) {
                     MusicBox companionBox = plugin.getCompanionManager().getCompanionBox(player);
                     plugin.getCompanionManager().removeCompanion(player);
 
@@ -176,5 +181,59 @@ public class BoxInteractionListener implements Listener {
 
         player.sendMessage(plugin.getConfigManager().getMessage("box.broken"));
         player.playSound(block.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0f, 0.8f);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onEntityExplode(EntityExplodeEvent event) {
+        handleExplodedBlocks(event.blockList());
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onBlockExplode(BlockExplodeEvent event) {
+        handleExplodedBlocks(event.blockList());
+    }
+
+    private void handleExplodedBlocks(List<Block> blocks) {
+        for (Block block : blocks) {
+            MusicBox box = plugin.getBoxManager().getBoxAt(block.getLocation());
+            if (box != null) {
+                if (box.getEngine() != null) {
+                    box.getEngine().getFloorEffect().reset();
+                    box.getEngine().getBallEffect().remove();
+                }
+                plugin.getBoxManager().unregisterBox(box);
+                ItemStack drop = plugin.getConfigManager().createBoxItem(box.isAutoPlay());
+                block.getWorld().dropItemNaturally(block.getLocation(), drop);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPistonExtend(BlockPistonExtendEvent event) {
+        for (Block block : event.getBlocks()) {
+            if (plugin.getBoxManager().getBoxAt(block.getLocation()) != null) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPistonRetract(BlockPistonRetractEvent event) {
+        for (Block block : event.getBlocks()) {
+            if (plugin.getBoxManager().getBoxAt(block.getLocation()) != null) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    private boolean isDockable(Block block) {
+        if (block == null) return false;
+        Material mat = block.getType();
+        return mat.isAir() || mat == Material.SHORT_GRASS || mat == Material.TALL_GRASS
+                || mat == Material.FERN || mat == Material.LARGE_FERN
+                || mat == Material.SNOW || mat == Material.DEAD_BUSH
+                || mat == Material.VINE || mat == Material.GLOW_LICHEN;
     }
 }
