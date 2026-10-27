@@ -3,7 +3,6 @@ package com.lino.custommusic.visual;
 import com.lino.custommusic.CustomMusicPlugin;
 import com.lino.custommusic.model.MusicBox;
 import com.lino.custommusic.model.VisualSettings;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -17,6 +16,7 @@ public class DiscoFloorEffect {
     private final CustomMusicPlugin plugin;
     private final MusicBox musicBox;
     private final List<Material> palette;
+    private final List<Location> activeFloorBlocks = new ArrayList<>();
     private int step = 0;
 
     public DiscoFloorEffect(CustomMusicPlugin plugin, MusicBox musicBox) {
@@ -26,21 +26,29 @@ public class DiscoFloorEffect {
     }
 
     public void tick() {
-        if (!plugin.getConfigManager().isDiscoFloorEnabled()) {
+        if (musicBox.isPortable() || !plugin.getConfigManager().isDiscoFloorEnabled()) {
+            reset();
             return;
         }
 
         VisualSettings.DiscoFloorMode mode = musicBox.getVisualSettings().getDiscoFloorMode();
         if (mode == VisualSettings.DiscoFloorMode.OFF || palette.isEmpty()) {
+            reset();
             return;
         }
 
         Location center = musicBox.getLocation();
         if (center == null || center.getWorld() == null) {
+            reset();
             return;
         }
 
         List<Location> floorBlocks = getFloorLocations(center);
+        if (!activeFloorBlocks.equals(floorBlocks)) {
+            reset();
+            activeFloorBlocks.addAll(floorBlocks);
+        }
+
         List<Player> players = new ArrayList<>();
         double maxDistSq = 24.0 * 24.0;
         for (Player p : center.getWorld().getPlayers()) {
@@ -72,26 +80,21 @@ public class DiscoFloorEffect {
     }
 
     public void reset() {
-        Location center = musicBox.getLocation();
-        if (center == null || center.getWorld() == null) {
+        if (activeFloorBlocks.isEmpty()) {
             return;
         }
 
-        List<Location> floorBlocks = getFloorLocations(center);
-        List<Player> players = new ArrayList<>();
-        double maxDistSq = 24.0 * 24.0;
-        for (Player p : center.getWorld().getPlayers()) {
-            if (p.getLocation().distanceSquared(center) <= maxDistSq) {
-                players.add(p);
-            }
-        }
-
-        for (Location loc : floorBlocks) {
+        for (Location loc : activeFloorBlocks) {
+            if (loc.getWorld() == null) continue;
             BlockData realData = loc.getBlock().getBlockData();
-            for (Player p : players) {
-                p.sendBlockChange(loc, realData);
+            double maxDistSq = 32.0 * 32.0;
+            for (Player p : loc.getWorld().getPlayers()) {
+                if (p.getLocation().distanceSquared(loc) <= maxDistSq) {
+                    p.sendBlockChange(loc, realData);
+                }
             }
         }
+        activeFloorBlocks.clear();
     }
 
     private List<Location> getFloorLocations(Location center) {

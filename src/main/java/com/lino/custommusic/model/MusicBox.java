@@ -243,11 +243,19 @@ public class MusicBox {
         return engine != null && engine.isPaused();
     }
 
+    public PlaybackEngine getEngine() {
+        return engine;
+    }
+
     public Player getPortableCarrier() {
         return portableCarrier;
     }
 
     public void setPortableCarrier(Player portableCarrier) {
+        if (this.engine != null) {
+            this.engine.getFloorEffect().reset();
+            this.engine.getBallEffect().remove();
+        }
         this.portableCarrier = portableCarrier;
     }
 

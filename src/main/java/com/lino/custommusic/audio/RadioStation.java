@@ -25,6 +25,7 @@ public class RadioStation {
     private int currentQueueIndex = 0;
     private SongEntry currentTrack;
     private int broadcastTick = 0;
+    private double radioAccumulator = 0.0;
     private int pauseCounter = 0;
 
     public RadioStation(CustomMusicPlugin plugin) {
@@ -74,7 +75,8 @@ public class RadioStation {
     }
 
     public int getBroadcastSeconds() {
-        return (int) Math.round(broadcastTick / 20.0);
+        if (currentTrack == null) return 0;
+        return (int) (broadcastTick / currentTrack.getTempo());
     }
 
     public boolean isInIntermission() {
@@ -104,25 +106,33 @@ public class RadioStation {
             return;
         }
 
-        List<AudioNote> notes = currentTrack.getNotesByTick().get(broadcastTick);
-        if (notes != null && !notes.isEmpty()) {
-            for (MusicBox box : connectedBoxes) {
-                if (box.isPoweredOff()) continue;
+        float tempo = currentTrack.getTempo();
+        radioAccumulator += (tempo / 20.0);
 
-                float masterVol = (box.getVolume() / 100.0f) * plugin.getConfigManager().getVolumeMultiplier();
-                for (AudioNote note : notes) {
-                    playNoteToBox(box, note, masterVol);
+        while (radioAccumulator >= 1.0) {
+            List<AudioNote> notes = currentTrack.getNotesByTick().get(broadcastTick);
+            if (notes != null && !notes.isEmpty()) {
+                for (MusicBox box : connectedBoxes) {
+                    if (box.isPoweredOff()) continue;
+
+                    float masterVol = (box.getVolume() / 100.0f) * plugin.getConfigManager().getVolumeMultiplier();
+                    for (AudioNote note : notes) {
+                        playNoteToBox(box, note, masterVol);
+                    }
                 }
             }
-        }
 
-        broadcastTick++;
-        if (broadcastTick >= currentTrack.getLengthInTicks()) {
-            int pauseSecs = plugin.getConfigManager().getRadioPauseSeconds();
-            if (pauseSecs > 0) {
-                pauseCounter = pauseSecs * 20;
-            } else {
-                advanceTrack();
+            broadcastTick++;
+            radioAccumulator -= 1.0;
+
+            if (broadcastTick >= currentTrack.getLengthInTicks()) {
+                int pauseSecs = plugin.getConfigManager().getRadioPauseSeconds();
+                if (pauseSecs > 0) {
+                    pauseCounter = pauseSecs * 20;
+                } else {
+                    advanceTrack();
+                }
+                return;
             }
         }
     }
@@ -136,6 +146,7 @@ public class RadioStation {
         currentQueueIndex = (currentQueueIndex + 1) % stationQueue.size();
         currentTrack = stationQueue.get(currentQueueIndex);
         broadcastTick = 0;
+        radioAccumulator = 0.0;
     }
 
     private void playNoteToBox(MusicBox box, AudioNote note, float masterVol) {

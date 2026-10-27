@@ -97,6 +97,10 @@ public class BoxInteractionListener implements Listener {
                         return;
                     }
 
+                    if (box.getEngine() != null) {
+                        box.getEngine().getFloorEffect().reset();
+                        box.getEngine().getBallEffect().remove();
+                    }
                     plugin.getBoxManager().unregisterBox(box);
                     block.setType(Material.AIR);
                     plugin.getCompanionManager().setCompanion(player, box);
@@ -159,6 +163,10 @@ public class BoxInteractionListener implements Listener {
         }
 
         event.setDropItems(false);
+        if (box.getEngine() != null) {
+            box.getEngine().getFloorEffect().reset();
+            box.getEngine().getBallEffect().remove();
+        }
         plugin.getBoxManager().unregisterBox(box);
 
         if (player.getGameMode() != GameMode.CREATIVE) {

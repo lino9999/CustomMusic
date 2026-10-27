@@ -12,6 +12,7 @@ public class SongEntry implements SongTrack {
     private final String author;
     private final int lengthInTicks;
     private final int durationSeconds;
+    private final float tempo;
     private final double price;
     private final String permission;
     private final Map<Integer, List<AudioNote>> notesByTick;
@@ -20,12 +21,13 @@ public class SongEntry implements SongTrack {
     private int auditionCount;
     private int purchaseCount;
 
-    public SongEntry(String id, String title, String author, int lengthInTicks, int durationSeconds, double price, String permission, Map<Integer, List<AudioNote>> notesByTick) {
+    public SongEntry(String id, String title, String author, int lengthInTicks, int durationSeconds, float tempo, double price, String permission, Map<Integer, List<AudioNote>> notesByTick) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.lengthInTicks = lengthInTicks;
         this.durationSeconds = durationSeconds;
+        this.tempo = tempo > 0.0f ? tempo : 20.0f;
         this.price = price;
         this.permission = permission;
         this.notesByTick = notesByTick != null ? notesByTick : Collections.emptyMap();
@@ -41,6 +43,7 @@ public class SongEntry implements SongTrack {
         this.author = author;
         this.lengthInTicks = durationSeconds * 20;
         this.durationSeconds = durationSeconds;
+        this.tempo = 20.0f;
         this.price = price;
         this.permission = permission;
         this.notesByTick = Collections.emptyMap();
@@ -73,6 +76,11 @@ public class SongEntry implements SongTrack {
     @Override
     public int getDurationSeconds() {
         return durationSeconds;
+    }
+
+    @Override
+    public float getTempo() {
+        return tempo;
     }
 
     @Override

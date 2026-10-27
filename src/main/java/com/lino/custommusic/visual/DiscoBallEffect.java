@@ -26,6 +26,11 @@ public class DiscoBallEffect {
     }
 
     public void tick() {
+        if (musicBox.isPortable()) {
+            remove();
+            return;
+        }
+
         VisualSettings.DiscoBallStyle style = musicBox.getVisualSettings().getDiscoBallStyle();
         if (style == VisualSettings.DiscoBallStyle.OFF) {
             remove();

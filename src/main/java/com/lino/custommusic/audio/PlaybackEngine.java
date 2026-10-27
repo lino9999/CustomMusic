@@ -27,6 +27,7 @@ public class PlaybackEngine {
     private BukkitTask playbackTask;
     private int currentTick = 0;
     private int totalTicks = 0;
+    private double tickAccumulator = 0.0;
     private boolean paused = false;
 
     public PlaybackEngine(CustomMusicPlugin plugin, MusicBox musicBox) {
@@ -47,6 +48,7 @@ public class PlaybackEngine {
 
         currentTick = 0;
         totalTicks = song.getLengthInTicks();
+        tickAccumulator = 0.0;
         paused = false;
 
         song.incrementAuditions();
@@ -69,6 +71,7 @@ public class PlaybackEngine {
             playbackTask = null;
         }
         currentTick = 0;
+        tickAccumulator = 0.0;
         paused = false;
 
         SongEntry song = musicBox.getCurrentSong();
@@ -87,6 +90,14 @@ public class PlaybackEngine {
 
     public boolean isPaused() {
         return paused;
+    }
+
+    public DiscoFloorEffect getFloorEffect() {
+        return floorEffect;
+    }
+
+    public DiscoBallEffect getBallEffect() {
+        return ballEffect;
     }
 
     private void tick() {
@@ -112,22 +123,32 @@ public class PlaybackEngine {
     }
 
     private void tickNbs(SongEntry song) {
-        List<AudioNote> notes = song.getNotesByTick().get(currentTick);
-        if (notes != null && !notes.isEmpty()) {
-            float masterVol = (musicBox.getVolume() / 100.0f) * plugin.getConfigManager().getVolumeMultiplier();
-            for (AudioNote note : notes) {
-                playNote(note, masterVol);
+        float tempo = song.getTempo();
+        float speedMultiplier = musicBox.getPlaybackSpeedMultiplier();
+        tickAccumulator += (tempo / 20.0) * speedMultiplier;
+
+        float masterVol = (musicBox.getVolume() / 100.0f) * plugin.getConfigManager().getVolumeMultiplier();
+
+        while (tickAccumulator >= 1.0) {
+            List<AudioNote> notes = song.getNotesByTick().get(currentTick);
+            if (notes != null && !notes.isEmpty()) {
+                for (AudioNote note : notes) {
+                    playNote(note, masterVol);
+                }
+            }
+
+            currentTick++;
+            tickAccumulator -= 1.0;
+
+            if (currentTick >= totalTicks) {
+                handleSongEnd();
+                return;
             }
         }
 
-        int currentSecs = (int) Math.round(currentTick / 20.0);
+        int currentSecs = (int) (currentTick / tempo);
         int totalSecs = song.getDurationSeconds();
         progressDisplay.update(song.getTitle(), currentSecs, totalSecs);
-
-        currentTick++;
-        if (currentTick >= totalTicks) {
-            handleSongEnd();
-        }
     }
 
     private void tickCustomSound(SongEntry song) {
@@ -156,7 +177,7 @@ public class PlaybackEngine {
 
     private void playNote(AudioNote note, float masterVol) {
         float noteVol = note.volume() * masterVol * 2.0f;
-        float pitch = note.pitch() * musicBox.getPlaybackSpeedMultiplier();
+        float pitch = note.pitch();
 
         if (musicBox.isHeadphones() && musicBox.getOwnerUuid() != null) {
             Player owner = Bukkit.getPlayer(musicBox.getOwnerUuid());

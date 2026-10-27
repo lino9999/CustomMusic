@@ -10,6 +10,7 @@ public interface SongTrack {
     String getAuthor();
     int getLengthInTicks();
     int getDurationSeconds();
+    float getTempo();
     double getPrice();
     String getPermission();
     Map<Integer, List<AudioNote>> getNotesByTick();

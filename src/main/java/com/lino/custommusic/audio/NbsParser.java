@@ -100,7 +100,7 @@ public final class NbsParser {
                 }
             }
 
-            int finalDurationTicks = currentTick > 0 ? currentTick : songLength;
+            int finalDurationTicks = Math.max((int) songLength, (int) currentTick);
             int durationSeconds = (int) Math.ceil(finalDurationTicks / (double) tempo);
             if (durationSeconds <= 0) {
                 durationSeconds = 1;
@@ -115,6 +115,7 @@ public final class NbsParser {
                     displayAuthor,
                     finalDurationTicks,
                     durationSeconds,
+                    tempo,
                     price,
                     permission,
                     notesByTick
