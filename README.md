@@ -21,9 +21,17 @@
 
 ## 📖 About CustomMusic
 
-**CustomMusic** is a high-performance, clean-room engineered Minecraft music plugin crafted by **Lino**. It allows server owners and players to deploy interactive musical jukeboxes, stream synchronized 24/7 radio stations, purchase songs with in-game currency via Vault, and carry floating companion speakers—all with zero client-side mods needed!
+> **CustomMusic** is a high-performance, clean-room engineered Minecraft music studio & portable companion jukebox plugin crafted by **Lino**. It empowers Minecraft server owners, builders, and players to deploy physical stereo music boxes, broadcast synchronized 24/7 radio stations, purchase songs with in-game currency via Vault, and carry floating companion speakers across survival and lobby worlds—with **100% vanilla client compatibility** and **zero client mods required**.
 
-Unlike legacy audio plugins that rely on fragile internal NMS code and unoptimized loops, CustomMusic is powered by a modern **$O(1)$ tick-indexed playback engine** and standard Bukkit API architecture, ensuring flawless stability and compatibility across all modern server versions (1.21.x to 26.x+).
+### 🔍 Search Engine Optimization (SEO) Highlights & Compatibility
+- **Minecraft Versions**: Native support from **Minecraft 1.21.1 up to 26.3+**.
+- **Supported Platforms**: Paper, Purpur, Spigot, and multi-threaded **Folia**.
+- **Audio Formats**: Note Block Studio (.nbs v0–v5), Vanilla Jukebox Music Discs, Custom Resource Pack OGG sounds.
+- **Performance**: Zero-reflection, pure modern Bukkit API with $O(1)$ tick-indexed note lookup, eliminating CPU spikes and server lag.
+- **Visuals**: Grief-safe client-side packet lightshows (`sendBlockChange`), rotating crystal disco balls, and multi-color note halos.
+
+### 🏷️ Repository Tags & Topics
+`minecraft` • `minecraft-plugin` • `spigot-plugin` • `paper-plugin` • `folia` • `purpur` • `custom-music` • `note-block-studio` • `nbs-player` • `jukebox` • `boombox` • `minecraft-radio` • `portable-music` • `spigotmc` • `vault-economy` • `minecraft-1-21` • `minecraft-26` • `java21`
 
 ---
 
