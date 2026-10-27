@@ -19,21 +19,24 @@ public class EconomyHook {
     }
 
     public boolean isAvailable() {
+        if (economy == null) {
+            init();
+        }
         return economy != null;
     }
 
     public double getBalance(Player player) {
-        if (economy == null || player == null) return 0.0;
+        if (!isAvailable() || player == null) return 0.0;
         return economy.getBalance(player);
     }
 
     public boolean has(Player player, double amount) {
-        if (economy == null || player == null) return true;
+        if (!isAvailable() || player == null) return true;
         return economy.has(player, amount);
     }
 
     public boolean withdraw(Player player, double amount) {
-        if (economy == null || player == null) return true;
+        if (!isAvailable() || player == null) return true;
         return economy.withdrawPlayer(player, amount).transactionSuccess();
     }
 }

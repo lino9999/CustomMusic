@@ -45,6 +45,9 @@ public class BoxManager {
     public void unregisterBox(MusicBox box) {
         if (box == null) return;
         box.stopPlayback();
+        if (plugin.getRadioStation() != null) {
+            plugin.getRadioStation().disconnect(box);
+        }
         boxesById.remove(box.getBoxId());
         if (box.getLocation() != null) {
             boxesByLocation.remove(BlockPosition.of(box.getLocation()));

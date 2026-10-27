@@ -209,6 +209,11 @@ public class DatabaseService {
         }
     }
 
+    public void saveBoxAsync(MusicBox box) {
+        if (box == null) return;
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> saveBox(box));
+    }
+
     public synchronized void deleteBox(UUID boxId) {
         if (connection == null || boxId == null) return;
         String query = "DELETE FROM music_boxes WHERE box_id = ?;";

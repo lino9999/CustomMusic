@@ -36,6 +36,7 @@ public class GuiManager {
         if (current == window) {
             activeWindows.remove(player.getUniqueId());
             if (window.getMusicBox() != null) {
+                plugin.getDatabaseService().saveBoxAsync(window.getMusicBox());
                 org.bukkit.Bukkit.getScheduler().runTask(plugin, () -> {
                     GuiWindow next = activeWindows.get(player.getUniqueId());
                     if (next == null || next.getMusicBox() != window.getMusicBox()) {

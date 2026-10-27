@@ -29,6 +29,7 @@ public class PlaybackEngine {
     private int totalTicks = 0;
     private double tickAccumulator = 0.0;
     private boolean paused = false;
+    private boolean auditionCounted = false;
 
     public PlaybackEngine(CustomMusicPlugin plugin, MusicBox musicBox) {
         this.plugin = plugin;
@@ -50,9 +51,7 @@ public class PlaybackEngine {
         totalTicks = song.getLengthInTicks();
         tickAccumulator = 0.0;
         paused = false;
-
-        song.incrementAuditions();
-        plugin.getDatabaseService().updateSongStatsAsync(song);
+        auditionCounted = false;
 
         playbackTask = Bukkit.getScheduler().runTaskTimer(plugin, this::tick, 1L, 1L);
     }
@@ -116,6 +115,12 @@ public class PlaybackEngine {
         if (song == null) {
             stop();
             return;
+        }
+
+        if (!auditionCounted && totalTicks > 0 && currentTick >= totalTicks * 0.2) {
+            auditionCounted = true;
+            song.incrementAuditions();
+            plugin.getDatabaseService().updateSongStatsAsync(song);
         }
 
         if (song.isCustomSound()) {

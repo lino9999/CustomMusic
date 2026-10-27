@@ -27,6 +27,7 @@ public class RadioStation {
     private int broadcastTick = 0;
     private double radioAccumulator = 0.0;
     private int pauseCounter = 0;
+    private boolean radioAuditionCounted = false;
 
     public RadioStation(CustomMusicPlugin plugin) {
         this.plugin = plugin;
@@ -106,6 +107,12 @@ public class RadioStation {
             return;
         }
 
+        if (!radioAuditionCounted && currentTrack.getLengthInTicks() > 0 && broadcastTick >= currentTrack.getLengthInTicks() * 0.2) {
+            radioAuditionCounted = true;
+            currentTrack.incrementAuditions();
+            plugin.getDatabaseService().updateSongStatsAsync(currentTrack);
+        }
+
         float tempo = currentTrack.getTempo();
         radioAccumulator += (tempo / 20.0);
 
@@ -147,6 +154,7 @@ public class RadioStation {
         currentTrack = stationQueue.get(currentQueueIndex);
         broadcastTick = 0;
         radioAccumulator = 0.0;
+        radioAuditionCounted = false;
     }
 
     private void playNoteToBox(MusicBox box, AudioNote note, float masterVol) {
@@ -163,6 +171,9 @@ public class RadioStation {
 
         Location loc = box.getLocation();
         if (loc != null && loc.getWorld() != null) {
+            if (!box.isPortable() && !loc.getWorld().isChunkLoaded(loc.getBlockX() >> 4, loc.getBlockZ() >> 4)) {
+                return;
+            }
             loc.getWorld().playSound(loc, note.sound(), SoundCategory.RECORDS, noteVol, pitch);
         }
     }
