@@ -76,6 +76,7 @@ public class DiscoBallEffect {
             entity.setMarker(true);
             entity.setSmall(true);
             entity.setInvulnerable(true);
+            entity.setCollidable(false);
             entity.getPersistentDataContainer().set(ENTITY_TAG, PersistentDataType.BYTE, (byte) 1);
 
             Material helmetMat = switch (style) {

@@ -69,6 +69,7 @@ public abstract class GuiWindow implements InventoryHolder {
         if (handler != null) {
             handler.accept(event);
         }
+        player.updateInventory();
     }
 
     protected ItemStack createButton(Material mat, String name, String... lore) {

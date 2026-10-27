@@ -40,6 +40,7 @@ public class CompanionTracker {
             stand.setMarker(true);
             stand.setSmall(true);
             stand.setInvulnerable(true);
+            stand.setCollidable(false);
             stand.getPersistentDataContainer().set(COMPANION_KEY, PersistentDataType.BYTE, (byte) 1);
             stand.getEquipment().setHelmet(new ItemStack(Material.NOTE_BLOCK));
             visualStands.put(uuid, stand);

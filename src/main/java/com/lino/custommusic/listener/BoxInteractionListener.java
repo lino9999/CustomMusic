@@ -90,6 +90,9 @@ public class BoxInteractionListener implements Listener {
             MusicBox box = plugin.getBoxManager().getBoxAt(block.getLocation());
 
             if (box != null) {
+                if (event.useInteractedBlock() == org.bukkit.event.Event.Result.DENY && !player.hasPermission("custommusic.admin")) {
+                    return;
+                }
                 event.setCancelled(true);
 
                 if (!player.hasPermission("custommusic.use")) {
@@ -105,6 +108,13 @@ public class BoxInteractionListener implements Listener {
 
                 if (plugin.getConfigManager().isCompanionEnabled() && plugin.getConfigManager().isCompanionSneakInteract() && player.isSneaking()) {
                     if (!player.hasPermission("custommusic.portable")) {
+                        player.sendMessage(plugin.getConfigManager().getMessage("general.no_permission"));
+                        return;
+                    }
+
+                    BlockBreakEvent breakEvent = new BlockBreakEvent(block, player);
+                    plugin.getServer().getPluginManager().callEvent(breakEvent);
+                    if (breakEvent.isCancelled()) {
                         player.sendMessage(plugin.getConfigManager().getMessage("general.no_permission"));
                         return;
                     }
@@ -138,6 +148,22 @@ public class BoxInteractionListener implements Listener {
                 Block targetBlock = block.getRelative(event.getBlockFace());
                 if (isDockable(targetBlock)) {
                     MusicBox companionBox = plugin.getCompanionManager().getCompanionBox(player);
+
+                    BlockPlaceEvent placeEvent = new BlockPlaceEvent(
+                            targetBlock,
+                            targetBlock.getState(),
+                            block,
+                            plugin.getConfigManager().createBoxItem(companionBox.isAutoPlay()),
+                            player,
+                            true,
+                            EquipmentSlot.HAND
+                    );
+                    plugin.getServer().getPluginManager().callEvent(placeEvent);
+                    if (placeEvent.isCancelled()) {
+                        player.sendMessage(plugin.getConfigManager().getMessage("general.no_permission"));
+                        return;
+                    }
+
                     plugin.getCompanionManager().removeCompanion(player);
 
                     targetBlock.setType(Material.NOTE_BLOCK);
