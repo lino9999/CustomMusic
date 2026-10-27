@@ -1,0 +1,49 @@
+name: CustomMusic
+version: '1.0.0'
+main: com.lino.custommusic.CustomMusicPlugin
+api-version: '1.21'
+author: Lino
+description: High-performance music player and portable jukebox with NBS support, radio, disco effects, and catalog.
+website: https://github.com/lino9999/CustomMusic
+folia-supported: true
+softdepend:
+  - Vault
+  - PlaceholderAPI
+
+commands:
+  custommusic:
+    description: Main control command for CustomMusic.
+    aliases: [cmusic, cm, musicbox]
+    permission: custommusic.use
+
+permissions:
+  custommusic.admin:
+    description: Access to administrative subcommands (give, scan, add, delete, reload, stopall).
+    default: op
+  custommusic.use:
+    description: Allows opening and interacting with music boxes.
+    default: true
+  custommusic.place:
+    description: Allows placing and breaking music boxes.
+    default: true
+  custommusic.portable:
+    description: Allows picking up companion portable music boxes.
+    default: true
+  custommusic.give:
+    description: Allows giving a music box to oneself.
+    default: op
+  custommusic.give.others:
+    description: Allows giving a music box to other players.
+    default: op
+  custommusic.modify.others:
+    description: Allows altering settings or playlists on other players unlocked boxes.
+    default: op
+  custommusic.break.others:
+    description: Allows breaking other players unlocked music boxes.
+    default: op
+  custommusic.bypass.limit:
+    description: Bypasses the maximum placement limit.
+    default: op
+  custommusic.limit.1:
+    description: Default allowance for 1 music box.
+    default: true

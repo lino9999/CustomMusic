@@ -1,0 +1,50 @@
+prefix: "<gradient:#00D2FF:#0072FF><bold>CustomMusic</bold></gradient> <dark_gray>»</dark_gray> "
+
+general:
+  no_permission: "<red>You lack the required permission to perform this action."
+  player_only: "<red>This command can only be executed by an active player."
+  player_not_found: "<red>Could not find an online player with that username."
+  reloaded: "<green>Plugin configuration, songs, and language files reloaded successfully."
+  unknown_command: "<red>Unknown subcommand. Use <yellow>/cm help</yellow> to view available actions."
+  action_cooldown: "<red>Please wait a moment before trying that action again."
+
+box:
+  received: "<green>You received a <gold>Custom Music Box</gold>!"
+  given_to: "<green>Delivered a music box to <yellow>%player%</yellow>."
+  placed: "<green>Music box placed! Right-click to open interface."
+  broken: "<yellow>Music box dismantled and returned to inventory."
+  not_owner: "<red>This music box is protected by its owner."
+  already_open: "<red>Another player is currently using this music box."
+  limit_reached: "<red>You have reached your maximum allowed music box limit (%limit%)."
+  all_stopped: "<yellow>All active music boxes on the server have been powered off."
+  portable_activated: "<aqua>Companion mode enabled! Your music box is now floating with you."
+  portable_docked: "<green>Your music box has been placed down."
+  portable_restricted: "<red>You cannot perform that action while carrying a portable player."
+
+audio:
+  track_purchased: "<green>Successfully unlocked <gold>%song%</gold> for <yellow>%price% coins</yellow>!"
+  insufficient_funds: "<red>You do not have enough funds to purchase this track."
+  file_not_found: "<red>Audio file does not exist in the songs directory."
+  song_already_registered: "<red>A song with ID <yellow>%id%</yellow> is already registered."
+  song_added: "<green>Registered new song: <gold>%name%</gold>."
+  song_deleted: "<yellow>Song removed successfully."
+  scanned: "<green>Scan complete! Discovered and synchronized <yellow>%count%</yellow> audio tracks."
+
+gui:
+  main_title: "<dark_gray>♬ <bold>CustomMusic Studio</bold>"
+  catalog_title: "<dark_gray>♬ <bold>Song Catalog</bold>"
+  playlist_title: "<dark_gray>♬ <bold>Active Playlist</bold>"
+  discs_title: "<dark_gray>♬ <bold>Jukebox Discs</bold>"
+  visuals_title: "<dark_gray>♬ <bold>Visual Settings</bold>"
+  stats_title: "<dark_gray>♬ <bold>Music Leaderboards</bold>"
+
+help:
+  header: "<gradient:#00D2FF:#0072FF><bold>━━━━ CustomMusic Commands ━━━━</bold></gradient>"
+  use: "<yellow>/cm<gray> - Open current companion music box"
+  give: "<yellow>/cm give [player] [lobby]<gray> - Obtain a music box item"
+  scan: "<yellow>/cm scan<gray> - Refresh and load songs folder"
+  add: "<yellow>/cm add <id> <price> <name...><gray> - Register an NBS file"
+  delete: "<yellow>/cm delete <id><gray> - Unregister a track"
+  stopall: "<yellow>/cm stopall<gray> - Halt all music server-wide"
+  reload: "<yellow>/cm reload<gray> - Reload plugin configuration"
+  footer: "<gradient:#00D2FF:#0072FF><bold>━━━━━━━━━━━━━━━━━━━━━━━━━━━</bold></gradient>"

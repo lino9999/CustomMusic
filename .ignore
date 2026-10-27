@@ -1,0 +1,8 @@
+target/
+*.class
+*.jar
+temp_inspect/
+Plugin originale/
+*.log
+.git/
+*.nbs

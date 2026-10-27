@@ -1,0 +1,83 @@
+[CENTER]
+[SIZE=6][B][COLOR=#00D2FF]CustomMusic Documentation & Admin Guide[/COLOR][/B][/SIZE]
+[SIZE=3]Complete setup instructions, song importing guide, configuration reference, and developer API.[/SIZE]
+[/CENTER]
+
+[HR][/HR]
+
+[SIZE=5][B][COLOR=#00D2FF]1. Installation[/COLOR][/B][/SIZE]
+[LIST=1]
+[*]Download the latest [B]CustomMusic.jar[/B] release.
+[*]Place the file into your server's [B]plugins/[/B] directory.
+[*](Optional) Ensure [B]Vault[/B] (with an economy plugin like EssentialsX) and [B]PlaceholderAPI[/B] are installed.
+[*]Restart your server. CustomMusic will automatically generate configuration files, database tables, and extract 24 bundled popular songs into [B]plugins/CustomMusic/songs/[/B].
+[/LIST]
+
+[HR][/HR]
+
+[SIZE=5][B][COLOR=#00D2FF]2. Adding Custom NBS Songs[/COLOR][/B][/SIZE]
+CustomMusic supports all Note Block Studio (.nbs) files.
+[LIST=1]
+[*]Drop your [B].nbs[/B] files into [B]plugins/CustomMusic/songs/[/B].
+[*]Ensure file names do not contain special characters (e.g., [I]my_song.nbs[/I]).
+[*]In-game or in console, execute [B]/cm scan[/B].
+[*]The plugin will instantly index the files and make them available in the Catalog and Radio rotation!
+[*]Alternatively, register songs with a specific price using:
+[CODE]/cm add <song_id> <price> <Display Song Name>[/CODE]
+[/LIST]
+
+[HR][/HR]
+
+[SIZE=5][B][COLOR=#00D2FF]3. Adding Custom Resource Pack Sounds (.ogg)[/COLOR][/B][/SIZE]
+If you have a server resource pack with custom music disc tracks, you can add them to [B]config.yml[/B]:
+[CODE=yaml]
+custom_ogg_tracks:
+  epic_track:
+    sound: "minecraft:music_disc.custom_one"
+    length: 180
+    title: "<gold>Epic Adventure Theme</gold>"
+    price: 250.0
+    permission: ""
+[/CODE]
+After adding, run [B]/cm reload[/B] to load the new custom tracks.
+
+[HR][/HR]
+
+[SIZE=5][B][COLOR=#00D2FF]4. Configuration Breakdown[/COLOR][/B][/SIZE]
+
+[B]config.yml:[/B]
+[LIST]
+[*][B]general.volume_multiplier:[/B] Master volume scaler (default: 1.0).
+[*][B]general.volume_step:[/B] Percentage change per click in volume controls (default: 5).
+[*][B]radio.enabled:[/B] Enables or disables the global 24/7 radio broadcaster.
+[*][B]radio.pause_between_tracks_seconds:[/B] Intermission length between radio songs.
+[*][B]displays.boss_bar_enabled:[/B] Show BossBar during playback with track duration.
+[*][B]displays.action_bar_enabled:[/B] Show ActionBar during playback.
+[*][B]disco_floor.palette:[/B] List of concrete/block materials cycled in dance floor mode.
+[*][B]portable_companion.sneak_interact:[/B] Allows picking up music boxes with Shift + Right Click.
+[/LIST]
+
+[HR][/HR]
+
+[SIZE=5][B][COLOR=#00D2FF]5. Developer API[/COLOR][/B][/SIZE]
+CustomMusic provides a static API facade for third-party plugins:
+
+[CODE=java]
+import com.lino.custommusic.api.CustomMusicAPI;
+import com.lino.custommusic.model.MusicBox;
+
+// Play a registered song at a location
+CustomMusicAPI.playSongAt(location, "megalovania", 80);
+
+// Retrieve active companion box for a player
+Optional<MusicBox> companion = CustomMusicAPI.getCompanionBox(player);
+companion.ifPresent(box -> {
+    box.setVolume(100);
+});
+[/CODE]
+
+[HR][/HR]
+
+[CENTER]
+[B]Questions or issues?[/B] Please open a ticket on [URL='https://github.com/lino9999/CustomMusic/issues']GitHub Issues[/URL].
+[/CENTER]

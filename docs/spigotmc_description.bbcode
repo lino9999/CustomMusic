@@ -1,0 +1,109 @@
+[CENTER]
+[IMG]https://raw.githubusercontent.com/lino9999/CustomMusic/master/assets/icon.png[/IMG]
+[SIZE=7][B][COLOR=#00D2FF]Custom[/COLOR][COLOR=#0072FF]Music[/COLOR][/B][/SIZE]
+[SIZE=4][I]The Ultimate Next-Gen Portable Music Box & Jukebox Experience[/I][/SIZE]
+[SIZE=3][B]Compatible with Spigot, Paper, Purpur & Folia (1.21.x to 26.x+)[/B][/SIZE]
+
+[URL='https://github.com/lino9999/CustomMusic'][B][COLOR=#FFAA00]⭐ GitHub Repository[/COLOR][/B][/URL] | [URL='https://github.com/lino9999/CustomMusic/releases'][B][COLOR=#00FF7F]⬇ Download Release[/COLOR][/B][/URL] | [URL='https://github.com/lino9999/CustomMusic/issues'][B][COLOR=#FF5555]⚡ Bug Tracker[/COLOR][/B][/URL]
+[/CENTER]
+
+[HR][/HR]
+
+[SIZE=5][B][COLOR=#00D2FF]✦ What is CustomMusic?[/COLOR][/B][/SIZE]
+[B]CustomMusic[/B] is a clean-room rebuilt, high-performance music studio and portable companion player for modern Minecraft servers. It allows players and server administrators to enjoy studio-quality **.nbs (Note Block Studio)** songs, vanilla music discs, and custom sound effects with zero client modifications required!
+
+Whether you want to place physical stereo speakers in player shops, broadcast server-wide synchronized radio, host dance parties with client-side disco floors, or carry a floating companion speaker that follows your character, CustomMusic does it all with unparalleled optimization.
+
+[HR][/HR]
+
+[SIZE=5][B][COLOR=#00D2FF]✦ Core Features[/COLOR][/B][/SIZE]
+
+[LIST]
+[*][B]♬ Full Note Block Studio (.nbs) Support:[/B] Native compatibility with all NBS formats (v0 to v5). Plays chords, tempo changes, custom velocities, and instruments seamlessly.
+[*][B]⚡ Ultra-Optimized O(1) Engine:[/B] Rebuilt from the ground up to index notes by tick. Zero lag spikes even with thousands of notes playing across dozens of boxes simultaneously.
+[*][B]📻 24/7 Server Radio Station:[/B] Synchronized global broadcast. Any player or deployed box can tune in to the radio stream on the fly.
+[*][B]🎒 Companion Portable Player:[/B] Shift + Right-Click any box to pick it up! It hovers faithfully over your shoulder, playing tunes wherever your adventure takes you.
+[*][B]💃 Grief-Free Disco Floor & Ball:[/B] Dynamic shimmering dance floors rendered entirely through client-side packet changes. No world alteration, no block updates, zero griefing!
+[*][B]✨ Visual Lightshows & Particles:[/B] Musical note halos, rainbow spirals, and flame funnels with customizable floating crystal disco balls.
+[*][B]💰 Integrated Economy Store:[/B] Hook into Vault so players can browse and purchase songs from the in-game Catalog GUI using server currency.
+[*][B]🎧 Private Headphones Mode:[/B] Toggle between public party speaker and private listening mode where only you hear the audio.
+[*][B]📊 Music Analytics & Leaderboards:[/B] Track real-time audition counts and most popular tracks directly from the Studio interface.
+[*][B]🛡 Folia & 1.21 to 26+ Ready:[/B] Built purely on standard modern Bukkit API. No fragile internal NMS code to break on server updates.
+[/LIST]
+
+[HR][/HR]
+
+[SIZE=5][B][COLOR=#00D2FF]✦ Interactive GUIs Preview[/COLOR][/B][/SIZE]
+
+[B]1. Main Studio Control Panel:[/B]
+[LIST]
+[*]Play, Pause, Skip, and Previous song buttons.
+[*]Smooth volume controls (0% to 100% in 5% increments).
+[*]Speed adjuster (0.75x, 1.0x, 1.25x tempo).
+[*]Quick navigation to Catalog, Playlist, Discs, Settings, and Statistics.
+[/LIST]
+
+[B]2. Song Catalog & Store:[/B]
+[LIST]
+[*]Explore all server songs with pagination.
+[*]Filter by All, Purchased, Most Played, or Most Purchased.
+[*]One-click purchasing with Vault balance verification.
+[*]Add or remove unlocked songs to your box playlist.
+[/LIST]
+
+[B]3. Jukebox Discs Cabinet:[/B]
+[LIST]
+[*]Spin any vanilla Minecraft disc (13, Cat, Pigstep, Relic, Creator, Precipice, and more).
+[/LIST]
+
+[B]4. Visual Customizer:[/B]
+[LIST]
+[*]Choose your Particle Mode: [I]Random, Rainbow, Spiral, Notes, Funnel Fire, Funnel Notes[/I].
+[*]Choose your Dance Floor Pattern: [I]Random, Rainbow, In Turn, Radial, Shuffle[/I].
+[*]Choose your Disco Ball Style: [I]Crystal, Retro, Emerald, Neon, Amethyst[/I].
+[*]Customize your BossBar progress color and style!
+[/LIST]
+
+[HR][/HR]
+
+[SIZE=5][B][COLOR=#00D2FF]✦ Commands & Permissions[/COLOR][/B][/SIZE]
+
+[CODE]
+Command: /custommusic (Aliases: /cmusic, /cm, /musicbox)
+
+  /cm                    - Open your floating companion music box
+  /cm give [player] [lobby] - Give a Music Box item (custommusic.give)
+  /cm scan               - Scan and index songs folder (custommusic.admin)
+  /cm add <id> <price> <name> - Register a new track (custommusic.admin)
+  /cm delete <id>        - Unregister a track (custommusic.admin)
+  /cm stopall            - Stop all active music boxes (custommusic.admin)
+  /cm reload             - Reload configuration files (custommusic.admin)
+  /cm help [page]        - Display help guide (custommusic.use)
+[/CODE]
+
+[B]Key Permissions:[/B]
+[LIST]
+[*][COLOR=#FFAA00]custommusic.use[/COLOR] - Open and interact with music boxes (default: true).
+[*][COLOR=#FFAA00]custommusic.place[/COLOR] - Place and dismantle music boxes (default: true).
+[*][COLOR=#FFAA00]custommusic.portable[/COLOR] - Carry portable companion box (default: true).
+[*][COLOR=#FFAA00]custommusic.admin[/COLOR] - Full administrative control (default: op).
+[*][COLOR=#FFAA00]custommusic.limit.<n>[/COLOR] - Max box deployment limit per player (default: 1).
+[*][COLOR=#FFAA00]custommusic.bypass.limit[/COLOR] - Unlimited box placement (default: op).
+[/LIST]
+
+[HR][/HR]
+
+[SIZE=5][B][COLOR=#00D2FF]✦ PlaceholderAPI Support[/COLOR][/B][/SIZE]
+[LIST]
+[*][CODE]%custommusic_current_song%[/CODE] - Name of song playing in your companion box.
+[*][CODE]%custommusic_is_playing%[/CODE] - Returns true or false.
+[*][CODE]%custommusic_volume%[/CODE] - Current companion box volume percentage.
+[*][CODE]%custommusic_radio_song%[/CODE] - Current track broadcasting on the server radio.
+[/LIST]
+
+[HR][/HR]
+
+[CENTER]
+[SIZE=4][B]Developed with passion by Lino[/B][/SIZE]
+[I]Free & Open Source under the MIT License[/I]
+[/CENTER]

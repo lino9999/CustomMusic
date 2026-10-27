@@ -1,0 +1,63 @@
+general:
+  language: "en"
+  volume_multiplier: 1.0
+  volume_step: 5
+  auto_scan_on_startup: true
+
+box_appearance:
+  material: "NOTE_BLOCK"
+  item_name: "<gradient:#FFAA00:#FF5500><bold>Custom Music Box</bold></gradient>"
+  lobby_item_name: "<gradient:#FFD700:#FFAA00><bold>Lobby Music Box</bold></gradient>"
+  item_lore:
+    - "<gray>Place down to start playing high-fidelity tunes."
+    - "<yellow>• <white>Radio Station"
+    - "<yellow>• <white>Song Catalog & Store"
+    - "<yellow>• <white>Personal Playlist"
+    - "<yellow>• <white>Disc Jukebox"
+    - "<yellow>• <white>Visual Lightshow"
+    - "<dark_gray>Shift + Right-Click to carry as portable player."
+  decorations_enabled: true
+  custom_model_data: 0
+
+radio:
+  enabled: true
+  pause_between_tracks_seconds: 3
+  pause_title: "<gradient:#FF5555:#FFAA00>Radio Intermission</gradient>"
+
+displays:
+  boss_bar_enabled: true
+  action_bar_enabled: false
+  boss_bar_format: "<gradient:#FFD700:#FFAA00>♫ %song%</gradient> <dark_gray>•</dark_gray> <green>%time%</green><gray>/<gray><white>%total%</white>"
+  action_bar_format: "<yellow>Playing:</yellow> <white>%song%</white> <gray>(%time% / %total%)</gray>"
+
+defaults:
+  volume: 60
+  locked: false
+  headphones: false
+  particle_mode: "RAINBOW"
+  disco_floor_mode: "RANDOM"
+  disco_ball_style: "CRYSTAL"
+  bar_color: "PURPLE"
+  bar_style: "SOLID"
+
+disco_floor:
+  enabled: true
+  palette:
+    - "ORANGE_CONCRETE"
+    - "MAGENTA_CONCRETE"
+    - "LIGHT_BLUE_CONCRETE"
+    - "YELLOW_CONCRETE"
+    - "LIME_CONCRETE"
+    - "PINK_CONCRETE"
+    - "CYAN_CONCRETE"
+
+portable_companion:
+  enabled: true
+  sneak_interact: true
+  distance_offset: 0.85
+
+economy:
+  enabled: true
+  default_price: 150.0
+
+custom_ogg_tracks: {}
