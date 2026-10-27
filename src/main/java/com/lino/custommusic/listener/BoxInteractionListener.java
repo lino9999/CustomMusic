@@ -6,8 +6,11 @@ import com.lino.custommusic.model.MusicBox;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,10 +21,14 @@ import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 import java.util.UUID;
@@ -235,5 +242,34 @@ public class BoxInteractionListener implements Listener {
                 || mat == Material.FERN || mat == Material.LARGE_FERN
                 || mat == Material.SNOW || mat == Material.DEAD_BUSH
                 || mat == Material.VINE || mat == Material.GLOW_LICHEN;
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onEntityDamage(EntityDamageByEntityEvent event) {
+        if (isPluginArmorStand(event.getEntity())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onEntityInteract(PlayerInteractAtEntityEvent event) {
+        if (isPluginArmorStand(event.getRightClicked())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
+        if (isPluginArmorStand(event.getRightClicked())) {
+            event.setCancelled(true);
+        }
+    }
+
+    private boolean isPluginArmorStand(Entity entity) {
+        if (!(entity instanceof ArmorStand stand)) return false;
+        NamespacedKey companionKey = new NamespacedKey(plugin, "companion");
+        NamespacedKey discoballKey = new NamespacedKey(plugin, "discoball");
+        return stand.getPersistentDataContainer().has(companionKey, PersistentDataType.BYTE)
+                || stand.getPersistentDataContainer().has(discoballKey, PersistentDataType.BYTE);
     }
 }

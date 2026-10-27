@@ -173,6 +173,21 @@ public class CustomMusicCommand implements CommandExecutor, TabCompleter {
                 sender.sendMessage(plugin.getConfigManager().getMessage("audio.song_deleted"));
                 return true;
             }
+            case "companion", "pocket", "open" -> {
+                if (!(sender instanceof Player player)) {
+                    sender.sendMessage(plugin.getConfigManager().getMessage("general.player_only"));
+                    return true;
+                }
+                MusicBox companion = plugin.getCompanionManager().getCompanionBox(player);
+                if (companion == null) {
+                    player.sendMessage(plugin.getConfigManager().format("&cYou are not currently carrying a companion music box."));
+                    return true;
+                }
+                ControlGui gui = new ControlGui(plugin, player, companion);
+                plugin.getGuiManager().registerWindow(player, gui);
+                gui.open();
+                return true;
+            }
             case "help" -> {
                 sendHelp(sender);
                 return true;
@@ -205,6 +220,9 @@ public class CustomMusicCommand implements CommandExecutor, TabCompleter {
         List<String> list = new ArrayList<>();
         if (args.length == 1) {
             list.add("help");
+            if (sender instanceof Player player && plugin.getCompanionManager().isCarrying(player)) {
+                list.add("companion");
+            }
             if (sender.hasPermission("custommusic.admin") || sender.hasPermission("custommusic.give")) {
                 list.add("give");
             }

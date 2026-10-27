@@ -105,6 +105,13 @@ public class PlaybackEngine {
             return;
         }
 
+        if (!musicBox.isPortable()) {
+            Location loc = musicBox.getLocation();
+            if (loc == null || loc.getWorld() == null || !loc.getWorld().isChunkLoaded(loc.getBlockX() >> 4, loc.getBlockZ() >> 4)) {
+                return;
+            }
+        }
+
         SongEntry song = musicBox.getCurrentSong();
         if (song == null) {
             stop();

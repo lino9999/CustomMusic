@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
@@ -53,6 +55,31 @@ public class PlayerSessionListener implements Listener {
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
+        Player player = event.getPlayer();
+        if (plugin.getCompanionManager().isCarrying(player)) {
+            plugin.getCompanionManager().tick();
+        }
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+            plugin.getDatabaseService().hasPlayerUnlockedSong(player.getUniqueId(), "");
+        });
+
+        for (MusicBox box : plugin.getBoxManager().getAllBoxes()) {
+            if (box.isAutoPlay() && box.getLocation() != null
+                    && box.getLocation().getWorld() != null
+                    && box.getLocation().getWorld().equals(player.getWorld())
+                    && !box.isPlaying()) {
+                box.startPlayback(plugin);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onChangeWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         if (plugin.getCompanionManager().isCarrying(player)) {
             plugin.getCompanionManager().tick();
